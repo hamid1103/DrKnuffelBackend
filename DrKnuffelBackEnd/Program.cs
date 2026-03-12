@@ -1,0 +1,97 @@
+using System.Net.Mime;
+using System.Text;
+using Microsoft.OpenApi;
+using Microsoft.AspNetCore.Identity;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
+
+// Register MVC controllers for handling HTTP requests.
+builder.Services.AddControllers();
+
+// Retrieve the SQL connection string from configuration.
+var sqlConnectionString = builder.Configuration.GetValue<string>("SqlConnectionString");
+var sqlConnectionStringFound = !string.IsNullOrWhiteSpace(sqlConnectionString);
+
+// Register OpenAPI/Swagger for API documentation and testing.
+//builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Dr Knuffel's backend",
+        Version = "v1"
+    });
+});
+builder.Services.Configure<RouteOptions>(o => o.LowercaseUrls = true);
+builder.Services.AddAuthorization();
+// Register ASP.NET Core Identity with Dapper stores for user authentication and management.
+// Configures password and user requirements.
+builder.Services.AddIdentityApiEndpoints<IdentityUser>(options =>
+    {
+        options.User.RequireUniqueEmail = true;
+        options.Password.RequiredLength = 10;
+        options.Password.RequireDigit = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireNonAlphanumeric = true;
+        options.Password.RequireUppercase = true;
+    })
+    .AddRoles<IdentityRole>();
+    //.AddDapperStores(options => { options.ConnectionString = sqlConnectionString; });
+
+// Register IHttpContextAccessor for accessing HTTP context in services (e.g., to get current user info).
+builder.Services.AddHttpContextAccessor();
+//builder.Services.AddTransient<IAuthenticationService, AspNetIdentityAuthenticationService>();
+
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "MySecureBackend API v1");
+        options.RoutePrefix = "swagger"; // Access at /swagger
+        options.CacheLifetime = TimeSpan.Zero; // Disable caching for development
+
+        // Inject a warning in the Swagger UI if the SQL connection string is missing
+        if (!sqlConnectionStringFound)
+            options.HeadContent = "<h1 align=\"center\">❌ SqlConnectionString not found ❌</h1>";
+    });
+    //Was getting bored of the error page default in dev environment
+    app.MapGet("/", context =>
+    {
+        var currentHealthMessage = @$"<!doctype html>
+<html>
+    <head><title>miniHTML</title></head>
+    <body>
+        <h1>Dev mode</h1>
+        <p>The time on the server is {DateTime.Now:O}</p>
+<a href='/swagger/index.html'>Swagger docu</a>
+    </body>
+</html>";
+        context.Response.ContentType = MediaTypeNames.Text.Html;
+        context.Response.ContentLength = Encoding.UTF8.GetByteCount(currentHealthMessage);
+        return context.Response.WriteAsync(currentHealthMessage);
+    });
+}
+
+app.UseHttpsRedirection();
+
+var summaries = new[]
+{
+    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+};
+
+// Enable authorization middleware.
+app.UseAuthorization();
+
+//app.MapControllers().RequireAuthorization();
+
+
+app.Run();

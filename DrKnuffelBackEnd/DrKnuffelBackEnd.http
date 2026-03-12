@@ -1,0 +1,6 @@
+@DrKnuffelBackEnd_HostAddress = http://localhost:5237
+
+GET {{DrKnuffelBackEnd_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

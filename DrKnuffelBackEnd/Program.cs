@@ -56,7 +56,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "MySecureBackend API v1");
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "DrKnuffelBackend API v1");
         options.RoutePrefix = "swagger"; // Access at /swagger
         options.CacheLifetime = TimeSpan.Zero; // Disable caching for development
 

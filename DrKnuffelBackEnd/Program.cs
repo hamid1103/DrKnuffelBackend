@@ -1,7 +1,8 @@
 using System.Net.Mime;
 using System.Text;
-using Microsoft.OpenApi;
+using DrKnuffelBackEnd.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,12 +40,12 @@ builder.Services.AddIdentityApiEndpoints<IdentityUser>(options =>
         options.Password.RequireNonAlphanumeric = true;
         options.Password.RequireUppercase = true;
     })
-    .AddRoles<IdentityRole>();
-    //.AddDapperStores(options => { options.ConnectionString = sqlConnectionString; });
+    .AddRoles<IdentityRole>()
+    .AddDapperStores(options => { options.ConnectionString = sqlConnectionString; });
 
 // Register IHttpContextAccessor for accessing HTTP context in services (e.g., to get current user info).
 builder.Services.AddHttpContextAccessor();
-//builder.Services.AddTransient<IAuthenticationService, AspNetIdentityAuthenticationService>();
+builder.Services.AddTransient<IAuthenticationService, AspNetIdentityAuthenticationService>();
 
 
 var app = builder.Build();
@@ -82,11 +83,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
 
 // Enable authorization middleware.
 app.UseAuthorization();

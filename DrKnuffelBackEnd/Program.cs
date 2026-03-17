@@ -87,6 +87,10 @@ app.UseHttpsRedirection();
 // Enable authorization middleware.
 app.UseAuthorization();
 
+// Register Identity endpoints for account management (register, login, etc.) under /account.
+// 👇 uncomment the following line to enable Identity API endpoints to use authentication/authorization
+app.MapGroup("/account").MapIdentityApi<IdentityUser>().WithTags("Account");
+
 //app.MapControllers().RequireAuthorization();
 
 

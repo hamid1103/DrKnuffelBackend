@@ -10,4 +10,5 @@ public class UserData
     //In Years
     public int UserAge;
     public Guid UserId;
+    public Guid RoleId;
 }

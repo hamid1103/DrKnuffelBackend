@@ -6,4 +6,5 @@ public interface IExtraUserData
 {
     Task AddAsync(UserData data);
     Task<UserData> GetAsync(Guid id);
+    Task<UserData> GetAsyncByUserId(string UID);
 }

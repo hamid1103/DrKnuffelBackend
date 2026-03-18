@@ -4,6 +4,12 @@ CREATE TABLE UserRole (
     Name NVARCHAR(100) NOT NULL
 );
 
+IF NOT EXISTS (SELECT 1 FROM UserRole WHERE Name = 'Kind')
+    INSERT INTO UserRole (ID, Name) VALUES (NEWID(), 'Kind');
+
+IF NOT EXISTS (SELECT 1 FROM UserRole WHERE Name = 'Ouder')
+INSERT INTO UserRole (ID, Name) VALUES (NEWID(), 'Ouder');
+
 -- UserData tabel
 CREATE TABLE UserData (
     ID UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),

@@ -18,7 +18,7 @@ public class SQLExtraUserData : IExtraUserData
     {
         using (var sqlConnection = new SqlConnection(SqlString))
         {
-            await sqlConnection.ExecuteAsync("INSERT INTO [UserData] (Id, DoctorName, AppointmentDate, AppointmentType, UserAge, UserId) VALUES (@Id, @DoctorName, @AppointmentDate, @AppointmentType, @UserAge, @UserId)", data);
+            await sqlConnection.ExecuteAsync("INSERT INTO [UserData] (Id, DoctorName, AppointmentDate, AppointmentType, UserAge, UserId, RoleId) VALUES (@Id, @DoctorName, @AppointmentDate, @AppointmentType, @UserAge, @UserId, @RoleId)", data);
         }
     }
 
@@ -28,5 +28,13 @@ public class SQLExtraUserData : IExtraUserData
         {
             return await sqlConnection.QuerySingleOrDefaultAsync<UserData>("SELECT * FROM [UserData] WHERE Id = @Id", new { id });   
         }
+    }
+
+    public async Task<UserData> GetAsyncByUserId(string UID)
+    {
+        using (var sqlConnection = new SqlConnection(SqlString))
+        {
+            return await sqlConnection.QuerySingleOrDefaultAsync<UserData>("SELECT * FROM [UserData] WHERE UserId = @UID", new { UID });   
+        };
     }
 }

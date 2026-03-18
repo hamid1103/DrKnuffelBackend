@@ -13,7 +13,7 @@ INSERT INTO UserRole (ID, Name) VALUES (NEWID(), 'Ouder');
 -- UserData tabel
 CREATE TABLE UserData (
     ID UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-    DocterName NVARCHAR(100),
+    DoctorName NVARCHAR(100),
     AppointmentDate DATETIME,
     AppointmentType NVARCHAR(100),
     UserAge INT,

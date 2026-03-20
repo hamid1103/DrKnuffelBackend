@@ -21,6 +21,22 @@ public class SQLProgressRepo : IProgressRepo
         }
     }
 
+    public async Task<IEnumerable<Models.Progress>> SelectAsync()
+    {
+        using (var sqlConnection = new SqlConnection(SqlString))
+        {
+            return await sqlConnection.QueryAsync<Models.Progress>("SELECT * FROM [Progress]");
+        }
+    }
+
+    public async Task<IEnumerable<Models.Progress>> GetAsyncById(Guid id)
+    {
+        using (var sqlConnection = new SqlConnection(SqlString))
+        {
+            return await sqlConnection.QueryAsync<Models.Progress>("SELECT * FROM [Progress] WHERE id = @id", new { id });
+        }
+        ;
+    }
     public async Task<IEnumerable<Models.Progress>> GetAsyncByUserId(Guid id)
     {
         using (var sqlConnection = new SqlConnection(SqlString))

@@ -27,6 +27,14 @@ public class SQLStepRepo : IStepRepo
         };
     }
 
+    public async Task<IEnumerable<Models.Step>> GetSteps()
+    {
+        using (var sqlConnection = new SqlConnection(SqlString))
+        {
+            return await sqlConnection.QueryAsync<Models.Step>("SELECT * FROM [Step]");   
+        };
+    }
+
     public async Task<Models.Step> GetStepByTitle(string name)
     {
         using (var sqlConnection = new SqlConnection(SqlString))

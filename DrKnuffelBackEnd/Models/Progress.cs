@@ -2,11 +2,11 @@
 {
     public class Progress
     {
-        public Guid Id;
-        public Guid UserDataId;
-        public Guid StepId;
-        public Boolean Completed;
-        public DateTime Completed_at;
+        public Guid? Id { get; set; }
+        public Guid UserDataId { get; set; }
+        public Guid StepId { get; set; }
+        public Boolean Completed { get; set; }
+        public DateTime Completed_at { get; set; }
 
 
     }

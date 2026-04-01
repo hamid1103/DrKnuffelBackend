@@ -1,4 +1,4 @@
-﻿using DrKnuffelBackEnd.Repositories;
+﻿using DrKnuffelBackEnd.Repositories.UserData;
 using DrKnuffelBackEnd.Repositories.Progress;
 using DrKnuffelBackEnd.Repositories.Step;
 using DrKnuffelBackEnd.Services;
@@ -36,11 +36,14 @@ public class ExtraUserDataController : ControllerBase
     [HttpPost(Name = "InsertUserData")]
     public async Task<ActionResult> InsertAsync(Models.UserData userData)
     {
+        var userId = _authenticationService.GetCurrentAuthenticatedUserId();
         //await _userData.AddAsync(userData);
         //return Ok();
 
         userData.Id = Guid.NewGuid();
+        userData.UserId = userId;
         await _userData.AddAsync(userData);
-        return CreatedAtRoute("GetuserDataId", new { objectId = userData.Id }, userData);
+        //return CreatedAtRoute("GetuserDataId", new { objectId = userData.Id }, userData);
+        return Ok(userData);
     }
 }

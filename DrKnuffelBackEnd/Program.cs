@@ -1,5 +1,7 @@
 using System.Net.Mime;
 using System.Text;
+using DrKnuffelBackEnd.Repositories.Step;
+using DrKnuffelBackEnd.Repositories.UserData;
 using DrKnuffelBackEnd.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi;
@@ -47,6 +49,9 @@ builder.Services.AddIdentityApiEndpoints<IdentityUser>(options =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IAuthenticationService, AspNetIdentityAuthenticationService>();
 
+builder.Services.AddTransient<IStepRepo, SQLStepRepo>(o => new SQLStepRepo(sqlConnectionString!));
+builder.Services.AddTransient<IExtraUserData, SQLExtraUserData>(o => new SQLExtraUserData(sqlConnectionString!));
+
 
 var app = builder.Build();
 
@@ -91,7 +96,7 @@ app.UseAuthorization();
 // 👇 uncomment the following line to enable Identity API endpoints to use authentication/authorization
 app.MapGroup("/account").MapIdentityApi<IdentityUser>().WithTags("Account");
 
-//app.MapControllers().RequireAuthorization();
+app.MapControllers().RequireAuthorization();
 
 
 app.Run();

@@ -3,7 +3,7 @@ using Dapper;
 using DrKnuffelBackEnd.Models;
 using Microsoft.Data.SqlClient;
 
-namespace DrKnuffelBackEnd.Repositories;
+namespace DrKnuffelBackEnd.Repositories.UserData;
 
 public class SQLExtraUserData : IExtraUserData
 {
@@ -14,27 +14,27 @@ public class SQLExtraUserData : IExtraUserData
         SqlString = sqlConnectionString;
     }
     
-    public async Task AddAsync(UserData data)
+    public async Task AddAsync(Models.UserData data)
     {
         using (var sqlConnection = new SqlConnection(SqlString))
         {
-            await sqlConnection.ExecuteAsync("INSERT INTO [UserData] (Id, DoctorName, AppointmentDate, AppointmentType, UserAge, UserId, RoleId) VALUES (@Id, @DoctorName, @AppointmentDate, @AppointmentType, @UserAge, @UserId, @RoleId)", data);
+            await sqlConnection.ExecuteAsync("INSERT INTO [UserData] (Id, DoctorName, AppointmentDate, AppointmentType, UserAge, User_id, Role_id) VALUES (@Id, @DoctorName, @AppointmentDate, @AppointmentType, @UserAge, @UserId, @RoleId)", data);
         }
     }
 
-    public async Task<UserData> GetAsync(Guid id)
+    public async Task<Models.UserData> GetAsync(Guid id)
     {
         using (var sqlConnection = new SqlConnection(SqlString))
         {
-            return await sqlConnection.QuerySingleOrDefaultAsync<UserData>("SELECT * FROM [UserData] WHERE Id = @Id", new { id });   
+            return await sqlConnection.QuerySingleOrDefaultAsync<Models.UserData>("SELECT * FROM [UserData] WHERE Id = @Id", new { id });   
         }
     }
 
-    public async Task<UserData> GetAsyncByUserId(string UID)
+    public async Task<Models.UserData> GetAsyncByUserId(string UID)
     {
         using (var sqlConnection = new SqlConnection(SqlString))
         {
-            return await sqlConnection.QuerySingleOrDefaultAsync<UserData>("SELECT * FROM [UserData] WHERE UserId = @UID", new { UID });   
+            return await sqlConnection.QuerySingleOrDefaultAsync<Models.UserData>("SELECT * FROM [UserData] WHERE UserId = @UID", new { UID });   
         };
     }
 }

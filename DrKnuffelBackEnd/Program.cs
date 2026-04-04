@@ -1,5 +1,6 @@
 using System.Net.Mime;
 using System.Text;
+using DrKnuffelBackEnd.Repositories.Progress;
 using DrKnuffelBackEnd.Repositories.Step;
 using DrKnuffelBackEnd.Repositories.UserData;
 using DrKnuffelBackEnd.Services;
@@ -51,7 +52,7 @@ builder.Services.AddTransient<IAuthenticationService, AspNetIdentityAuthenticati
 
 builder.Services.AddTransient<IStepRepo, SQLStepRepo>(o => new SQLStepRepo(sqlConnectionString!));
 builder.Services.AddTransient<IExtraUserData, SQLExtraUserData>(o => new SQLExtraUserData(sqlConnectionString!));
-
+builder.Services.AddTransient<IProgressRepo, SQLProgressRepo>(o => new SQLProgressRepo(sqlConnectionString!));
 
 var app = builder.Build();
 

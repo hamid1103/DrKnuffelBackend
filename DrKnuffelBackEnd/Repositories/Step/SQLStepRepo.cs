@@ -39,7 +39,15 @@ public class SQLStepRepo : IStepRepo
     {
         using (var sqlConnection = new SqlConnection(SqlString))
         {
-            return await sqlConnection.QuerySingleAsync<Models.Step>("SELECT * FROM [Step] WHERE Title = @id", new { name });   
+            return await sqlConnection.QuerySingleAsync<Models.Step>("SELECT * FROM [Step] WHERE Title = @name", new { name });   
         };
+    }
+
+    public async Task<Models.Step> GetStepByStepOrder(int index)
+    {
+        using (var sqlConnection = new SqlConnection(SqlString))
+        {
+            return await sqlConnection.QuerySingleAsync<Models.Step>("SELECT * FROM [Step] WHERE Step_order = @index", new {index});
+        }
     }
 }

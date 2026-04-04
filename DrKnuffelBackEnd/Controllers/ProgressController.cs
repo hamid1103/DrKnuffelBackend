@@ -1,4 +1,5 @@
 using DrKnuffelBackEnd.Repositories.Progress;
+using DrKnuffelBackEnd.Repositories.Step;
 using DrKnuffelBackEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace DrKnuffelBackEnd.Controllers;
 public class ProgressController : ControllerBase
 {
     private readonly IProgressRepo _progressRepo;
+    private readonly IStepRepo _stepRepo;
     private readonly IAuthenticationService _authenticationService;
 
     public ProgressController(IProgressRepo progressRepo, IAuthenticationService _authenticationService)
@@ -35,6 +37,11 @@ public class ProgressController : ControllerBase
     [HttpPost(Name = "InsertProgressItem")]
     public async Task<ActionResult> InsertAsync(Models.Progress model)
     {
+        if (model.StepOrder != null)
+        {
+            Models.Step step = await _stepRepo.GetStepByStepOrder((int)model.StepOrder);
+            model.StepId = (Guid)step.Id;
+        }
         model.Id = Guid.NewGuid();
         await _progressRepo.InsertAsync(model);
         return Ok();

@@ -30,6 +30,7 @@ public class StepController : ControllerBase
     [HttpPost(Name = "InsertStep")]
     public async Task<ActionResult> InsertAsync(Models.Step stepData)
     {
+        stepData.Id = Guid.NewGuid();
         //To be secured with role checks later
         await _stepRepo.InsertAsync(stepData);
         return Ok();

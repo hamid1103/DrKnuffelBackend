@@ -6,4 +6,5 @@ public interface IStepRepo
     Task<Models.Step> GetStepById(Guid id);
     Task<IEnumerable<DrKnuffelBackEnd.Models.Step>> GetSteps();
     Task<Models.Step> GetStepByTitle(string name);
+    Task<Models.Step> GetStepByStepOrder(int index);
 }

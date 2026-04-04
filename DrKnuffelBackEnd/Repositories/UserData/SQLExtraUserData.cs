@@ -18,7 +18,7 @@ public class SQLExtraUserData : IExtraUserData
     {
         using (var sqlConnection = new SqlConnection(SqlString))
         {
-            await sqlConnection.ExecuteAsync("INSERT INTO [UserData] (Id, DoctorName, AppointmentDate, AppointmentType, UserAge, User_id, Role_id) VALUES (@Id, @DoctorName, @AppointmentDate, @AppointmentType, @UserAge, @UserId, @RoleId)", data);
+            await sqlConnection.ExecuteAsync("INSERT INTO [UserData] (Id, DoctorName, AppointmentDate, AppointmentType, UserAge, User_id) VALUES (@Id, @DoctorName, @AppointmentDate, @AppointmentType, @UserAge, @UserId)", data);
         }
     }
 

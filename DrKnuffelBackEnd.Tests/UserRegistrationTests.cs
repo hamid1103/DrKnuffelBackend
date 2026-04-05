@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 using System.Text;
 
@@ -97,5 +96,6 @@ namespace DrKnuffelBackEnd.Tests
             // Assert
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
         }
+        
     }
 }

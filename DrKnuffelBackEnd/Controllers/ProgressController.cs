@@ -47,7 +47,7 @@ public class ProgressController : ControllerBase
         if (model.StepOrder != null)
         {
             Models.Step step = await _stepRepo.GetStepByStepOrder((int)model.StepOrder);
-            model.StepId = (Guid)step.Id;
+            model.Step_id = (Guid)step.Id;
         }
         model.Id = Guid.NewGuid();
         await _progressRepo.InsertAsync(model);
@@ -61,10 +61,10 @@ public class ProgressController : ControllerBase
         {
             Models.Progress prog = new Progress();
             prog.Id = Guid.NewGuid();
-            prog.UserDataId = progressBulk.UserDataId;
+            prog.UserData_id = Guid.Parse(progressBulk.UserDataId);
             
             Step step = await _stepRepo.GetStepByStepOrder(stepIndex);
-            prog.StepId = step.Id;
+            prog.Step_id = step.Id;
             //Why do we have this...
             prog.Completed = true;
             //I can understand this one tho.

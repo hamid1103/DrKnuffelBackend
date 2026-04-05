@@ -3,8 +3,8 @@
     public class Progress
     {
         public Guid? Id { get; set; }
-        public string UserDataId { get; set; }
-        public Guid? StepId { get; set; }
+        public Guid? UserData_id { get; set; }
+        public Guid? Step_id { get; set; }
         public bool Completed { get; set; }
         public DateTime Completed_at { get; set; }
         public int? StepOrder;

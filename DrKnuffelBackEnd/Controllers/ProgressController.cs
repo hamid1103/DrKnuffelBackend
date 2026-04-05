@@ -57,11 +57,14 @@ public class ProgressController : ControllerBase
     [HttpPost("Bulk",Name = "InsertProgressBulk")]
     public async Task<ActionResult> InsertBulkAsync(BulkUploadProgress progressBulk)
     {
+        //We need to prevent redundant, duplicated save entries
+        List<Progress> UserProgress = (List<Progress>)await _progressRepo.GetAsyncByUserDataId(progressBulk.UserData_id);
+        
         foreach (var stepIndex in progressBulk.Steps)
         {
             Models.Progress prog = new Progress();
             prog.Id = Guid.NewGuid();
-            prog.UserData_id = Guid.Parse(progressBulk.UserDataId);
+            prog.UserData_id = Guid.Parse(progressBulk.UserData_id);
             
             Step step = await _stepRepo.GetStepByStepOrder(stepIndex);
             prog.Step_id = step.Id;
@@ -70,7 +73,10 @@ public class ProgressController : ControllerBase
             //I can understand this one tho.
             prog.Completed_at = DateTime.Now;
 
-            await _progressRepo.InsertAsync(prog);
+            if (!UserProgress.Any(x => x.Step_id == prog.Step_id))
+            {
+                await _progressRepo.InsertAsync(prog);
+            }
         }
         return Ok();
     }
@@ -78,6 +84,6 @@ public class ProgressController : ControllerBase
 
 public class BulkUploadProgress
 {
-    public string UserDataId { get; set; }
+    public string UserData_id { get; set; }
     public List<int> Steps { get; set; }
 }

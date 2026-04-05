@@ -21,7 +21,7 @@ public class SQLProgressRepo : IProgressRepo
         }
     }
 
-    public async Task<IEnumerable<Models.Progress>> GetAsyncByUserId(string id)
+    public async Task<IEnumerable<Models.Progress>> GetAsyncByUserDataId(string id)
     {
         using (var sqlConnection = new SqlConnection(SqlString))
         {

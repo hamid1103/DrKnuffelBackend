@@ -1,6 +1,7 @@
 using DrKnuffelBackEnd.Models;
 using DrKnuffelBackEnd.Repositories.Progress;
 using DrKnuffelBackEnd.Repositories.Step;
+using DrKnuffelBackEnd.Repositories.UserData;
 using DrKnuffelBackEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,10 +16,12 @@ public class ProgressController : ControllerBase
     private readonly IProgressRepo _progressRepo;
     private readonly IStepRepo _stepRepo;
     private readonly IAuthenticationService _authenticationService;
+    private readonly IExtraUserData _extraUserDataRepo;
 
-    public ProgressController(IProgressRepo progressRepo, IStepRepo stepRepo, IAuthenticationService _authenticationService)
+    public ProgressController(IProgressRepo progressRepo, IExtraUserData userDataRepoRepo, IStepRepo stepRepo, IAuthenticationService _authenticationService)
     {
         _progressRepo = progressRepo;
+        _extraUserDataRepo = userDataRepoRepo;
         this._stepRepo = stepRepo;
         this._authenticationService = _authenticationService;
     }
@@ -29,7 +32,9 @@ public class ProgressController : ControllerBase
         string userId = _authenticationService.GetCurrentAuthenticatedUserId();
         if (!string.IsNullOrEmpty(userId))
         {
-            var list = await _progressRepo.GetAsyncByUserId(userId);
+            //Get UserData related to user.
+            Models.UserData eud = await _extraUserDataRepo.GetAsyncByUserId(userId);
+            var list = await _progressRepo.GetAsyncByUserDataId(eud.Id.ToString());
             return Ok(list);
         }
         //Just in case :)

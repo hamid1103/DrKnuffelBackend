@@ -19,7 +19,7 @@ jobs:
   check: # checking if the secrets exist (src: https://stackoverflow.com/questions/72925899/github-actions-detect-if-secret-exists)
       runs-on: ubuntu-latest
       env:
-      TEST_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+      CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
       steps:
         - name: "Check if AZURE_WEBAPP_NAME secret exists"
           env: 

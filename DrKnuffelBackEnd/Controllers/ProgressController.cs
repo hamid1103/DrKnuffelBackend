@@ -84,6 +84,6 @@ public class ProgressController : ControllerBase
 
 public class BulkUploadProgress
 {
-    public string UserData_id { get; set; }
-    public List<int> Steps { get; set; }
+    public string? UserData_id { get; set; }
+    public List<int>? Steps { get; set; }
 }

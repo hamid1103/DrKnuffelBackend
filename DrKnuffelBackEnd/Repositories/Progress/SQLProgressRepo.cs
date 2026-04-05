@@ -17,7 +17,7 @@ public class SQLProgressRepo : IProgressRepo
     {
         using (var sqlConnection = new SqlConnection(SqlString))
         {
-            await sqlConnection.ExecuteAsync("INSERT INTO [Progress] (Id, UserDataId, StepId, Completed, Completed_at) VALUES (@Id, @UserDataId, @StepId, @Completed, @Completed_at)", data);
+            await sqlConnection.ExecuteAsync("INSERT INTO [Progress] (Id, UserData_id, Step_id, Completed, Completed_at) VALUES (@Id, @UserDataId, @StepId, @Completed, @Completed_at)", data);
         }
     }
 

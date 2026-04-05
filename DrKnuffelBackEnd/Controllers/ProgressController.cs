@@ -1,3 +1,4 @@
+using DrKnuffelBackEnd.Models;
 using DrKnuffelBackEnd.Repositories.Progress;
 using DrKnuffelBackEnd.Repositories.Step;
 using DrKnuffelBackEnd.Services;
@@ -15,9 +16,10 @@ public class ProgressController : ControllerBase
     private readonly IStepRepo _stepRepo;
     private readonly IAuthenticationService _authenticationService;
 
-    public ProgressController(IProgressRepo progressRepo, IAuthenticationService _authenticationService)
+    public ProgressController(IProgressRepo progressRepo, IStepRepo stepRepo, IAuthenticationService _authenticationService)
     {
         _progressRepo = progressRepo;
+        this._stepRepo = stepRepo;
         this._authenticationService = _authenticationService;
     }
 
@@ -46,4 +48,31 @@ public class ProgressController : ControllerBase
         await _progressRepo.InsertAsync(model);
         return Ok();
     }
+
+    [HttpPost("Bulk",Name = "InsertProgressBulk")]
+    public async Task<ActionResult> InsertBulkAsync(BulkUploadProgress progressBulk)
+    {
+        foreach (var stepIndex in progressBulk.Steps)
+        {
+            Models.Progress prog = new Progress();
+            prog.Id = Guid.NewGuid();
+            prog.UserDataId = progressBulk.UserDataId;
+            
+            Step step = await _stepRepo.GetStepByStepOrder(stepIndex);
+            prog.StepId = step.Id;
+            //Why do we have this...
+            prog.Completed = true;
+            //I can understand this one tho.
+            prog.Completed_at = DateTime.Now;
+
+            await _progressRepo.InsertAsync(prog);
+        }
+        return Ok();
+    }
+}
+
+public class BulkUploadProgress
+{
+    public string UserDataId { get; set; }
+    public List<int> Steps { get; set; }
 }

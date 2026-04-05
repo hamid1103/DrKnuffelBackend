@@ -7,8 +7,8 @@ namespace DrKnuffelBackEnd.Tests
     [TestClass]
     public class UserRegistrationTests
     {
-        private WebApplicationFactory<Program> factory;
-        private HttpClient client;
+        private WebApplicationFactory<Program> factory = new();
+        private HttpClient client = new();
 
         [TestInitialize]
         public void Setup()

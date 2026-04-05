@@ -25,7 +25,7 @@ public class SQLProgressRepo : IProgressRepo
     {
         using (var sqlConnection = new SqlConnection(SqlString))
         {
-            return await sqlConnection.QueryAsync<Models.Progress>("SELECT * FROM [Progress] WHERE UserDataId = @id", new { id });   
+            return await sqlConnection.QueryAsync<Models.Progress>("SELECT * FROM [Progress] WHERE UserData_id = @id", new { id });   
         };
     }
 }

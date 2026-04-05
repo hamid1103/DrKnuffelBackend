@@ -34,7 +34,7 @@ public class SQLExtraUserData : IExtraUserData
     {
         using (var sqlConnection = new SqlConnection(SqlString))
         {
-            return await sqlConnection.QuerySingleOrDefaultAsync<Models.UserData>("SELECT * FROM [UserData] WHERE UserId = @UID", new { UID });   
+            return await sqlConnection.QuerySingleOrDefaultAsync<Models.UserData>("SELECT * FROM [UserData] WHERE User_id = @UID", new { UID });   
         };
     }
 }

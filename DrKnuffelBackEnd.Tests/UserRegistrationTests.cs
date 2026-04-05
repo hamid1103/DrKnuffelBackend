@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 using System.Text;
 
@@ -15,18 +14,7 @@ namespace DrKnuffelBackEnd.Tests
         [TestInitialize]
         public void Setup()
         {
-            factory = new WebApplicationFactory<Program>()
-                .WithWebHostBuilder(builder =>
-                {
-                    builder.ConfigureAppConfiguration((context, config) =>
-                    {
-                        config.AddInMemoryCollection(new Dictionary<string, string>
-                        {
-                            { "ConnectionStrings:DefaultConnection", "Server=tcp:avansict2242721.database.windows.net,1433;Initial Catalog=db2242721;Persist Security Info=False;User ID=MY_APPLICATION_USER;Password=W@chtwoord159;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" }
-                        });
-                    });
-                });
-
+            factory = new WebApplicationFactory<Program>();
             client = factory.CreateClient();
         }
 

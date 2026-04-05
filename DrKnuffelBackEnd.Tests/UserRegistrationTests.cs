@@ -15,8 +15,6 @@ namespace DrKnuffelBackEnd.Tests
         [TestInitialize]
         public void Setup()
         {
-            var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-
             factory = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
@@ -24,7 +22,7 @@ namespace DrKnuffelBackEnd.Tests
                     {
                         config.AddInMemoryCollection(new Dictionary<string, string>
                         {
-                    { "ConnectionStrings:DefaultConnection", connectionString }
+                            { "ConnectionStrings:DefaultConnection", "Server=tcp:avansict2242721.database.windows.net,1433;Initial Catalog=db2242721;Persist Security Info=False;User ID=MY_APPLICATION_USER;Password=W@chtwoord159;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" }
                         });
                     });
                 });

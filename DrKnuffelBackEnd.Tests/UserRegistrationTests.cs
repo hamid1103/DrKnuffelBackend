@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
 using System.Text;
 
@@ -7,13 +9,26 @@ namespace DrKnuffelBackEnd.Tests
     [TestClass]
     public class UserRegistrationTests
     {
-        private WebApplicationFactory<Program> factory = new();
-        private HttpClient client = new();
+        private WebApplicationFactory<Program> factory;
+        private HttpClient client;
 
         [TestInitialize]
         public void Setup()
         {
-            factory = new WebApplicationFactory<Program>();
+            var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+
+            factory = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder =>
+                {
+                    builder.ConfigureAppConfiguration((context, config) =>
+                    {
+                        config.AddInMemoryCollection(new Dictionary<string, string>
+                        {
+                    { "ConnectionStrings:DefaultConnection", connectionString }
+                        });
+                    });
+                });
+
             client = factory.CreateClient();
         }
 
@@ -96,6 +111,5 @@ namespace DrKnuffelBackEnd.Tests
             // Assert
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
         }
-        
     }
 }

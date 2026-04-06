@@ -1,101 +1,102 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using System.Net;
-using System.Text;
+﻿using Microsoft.AspNetCore.Mvc;
+using Moq;
+using DrKnuffelBackEnd.Controllers;
+using DrKnuffelBackEnd.Models;
+using DrKnuffelBackEnd.Repositories;
+using DrKnuffelBackEnd.Services;
+using Microsoft.EntityFrameworkCore.Storage;
+using DrKnuffelBackEnd.Repositories.UserData;
 
 namespace DrKnuffelBackEnd.Tests
 {
     [TestClass]
-    public class UserRegistrationTests
+    public sealed class UserRegistrationTests
     {
-        private WebApplicationFactory<Program> factory;
-        private HttpClient client;
+        private ExtraUserDataController controller;
+        private Mock<IExtraUserData> userDataRepository;
+        private Mock<IAuthenticationService> authenticationService;
+        private string userId;
 
         [TestInitialize]
         public void Setup()
         {
-            factory = new WebApplicationFactory<Program>();
-            client = factory.CreateClient();
+            userDataRepository = new Mock<IExtraUserData>();
+            authenticationService = new Mock<IAuthenticationService>();
+
+            userId = Guid.NewGuid().ToString();
+
+            authenticationService.Setup(x => x.GetCurrentAuthenticatedUserId()).Returns(userId);
+
+            controller = new ExtraUserDataController(userDataRepository.Object, authenticationService.Object);
         }
 
         [TestMethod]
-        public async Task Register_PasswordTooShort_ReturnsBadRequest()
+        public async Task GetAsync_NoUser_ReturnsUnauthorized()
         {
             // Arrange
-            var json = """
-            {
-                "email": "test1@test.com",
-                "password": "Short1!"
-            }
-            """;
-
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            authenticationService
+                .Setup(x => x.GetCurrentAuthenticatedUserId())
+                .Returns((string)null);
 
             // Act
-            var response = await client.PostAsync("/account/register", content);
+            var response = await controller.GetAsync();
 
             // Assert
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.IsInstanceOfType(response.Result, typeof(UnauthorizedResult));
         }
 
         [TestMethod]
-        public async Task Register_PasswordWithoutDigit_ReturnsBadRequest()
+        public async Task InsertAsync_ValidUserData_ReturnsOk()
         {
             // Arrange
-            var json = """
+            var userData = new UserData
             {
-                "email": "test2@test.com",
-                "password": "NoDigitPassword!"
-            }
-            """;
+                DoctorName = "Dr. Smith",
+                UserAge = 30
+            };
 
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            userDataRepository
+                .Setup(x => x.AddAsync(It.IsAny<UserData>()))
+                .Returns(Task.CompletedTask);
 
             // Act
-            var response = await client.PostAsync("/account/register", content);
+            var response = await controller.InsertAsync(userData);
 
             // Assert
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.IsInstanceOfType(response, typeof(OkObjectResult));
+
+            var okResult = response as OkObjectResult;
+            var returnedData = okResult.Value as UserData;
+
+            Assert.IsNotNull(returnedData.Id);
+            Assert.AreEqual(userId, returnedData.UserId);
         }
 
         [TestMethod]
-        public async Task Register_PasswordWithoutUppercase_ReturnsBadRequest()
+        public async Task GetAsync_WithUser_ReturnsUserData()
         {
             // Arrange
-            var json = """
+            var data = new UserData
             {
-                "email": "test3@test.com",
-                "password": "lowercase123!"
-            }
-            """;
+                DoctorName = "Dr. A",
+                UserAge = 25
+            };
 
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            userDataRepository
+                .Setup(x => x.GetAsyncByUserId(userId))
+                .Returns(Task.FromResult(data));
 
             // Act
-            var response = await client.PostAsync("/account/register", content);
+            var response = await controller.GetAsync();
 
             // Assert
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        }
+            Assert.IsInstanceOfType(response.Result, typeof(OkObjectResult));
 
-        [TestMethod]
-        public async Task Register_PasswordWithoutSpecialChar_ReturnsBadRequest()
-        {
-            // Arrange
-            var json = """
-            {
-                "email": "test4@test.com",
-                "password": "Valid12345"
-            }
-            """;
+            var okResult = response.Result as OkObjectResult;
+            var result = okResult.Value as UserData;
 
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            // Act
-            var response = await client.PostAsync("/account/register", content);
-
-            // Assert
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Dr. A", result.DoctorName);
         }
     }
 }

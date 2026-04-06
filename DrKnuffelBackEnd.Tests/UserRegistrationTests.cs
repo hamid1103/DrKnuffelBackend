@@ -97,6 +97,7 @@ namespace DrKnuffelBackEnd.Tests
 
             Assert.IsNotNull(result);
             Assert.AreEqual("Dr. A", result.DoctorName);
+
         }
     }
 }
